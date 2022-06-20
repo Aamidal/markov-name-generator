@@ -1,19 +1,17 @@
 #name_extractor.py
-import os
 import csv
+"""
+To pull names from the worldcities.csv, insert a list of ISO 2 codes in quotes
+separated by a comma
+"""
 
-"""To pull names from the worldcities.csv, insert a list of ISO 2 codes in quotes
-separated by a comma"""
-countries = ['UZ', 'QA', 'ZW']
+countries = ['UZ', 'QA', 'ZW'] 
 filename = ' '.join(countries) #Names file after the countries input.
 
 
 # specifiying file path
-script_dir = os.path.dirname(__file__)
-rel_path = "libs\worldcities.csv"
+read_path = "worldcities.csv"
 save_path = f'libs\{filename}.txt'
-abs_read_path = os.path.join(script_dir, rel_path)
-abs_save_path = os.path.join(script_dir, save_path)
 
 
 
@@ -28,14 +26,14 @@ def read_file(filename, iso):
 
 def save_list(data):
     """Save created list to .txt"""
-    with open(abs_save_path, 'w') as f:
+    with open(save_path, 'w') as f:
         for place in data:
             f.write(place +"\n")
 
 
 # main code block
 places = []
-read_file(abs_read_path, countries)
+read_file(read_path, countries)
 print(places)
 print(len(places), 'names in list.')
 save_list(places)
