@@ -1,6 +1,5 @@
 import random
 import sys
-import os
 
 """
 This module has been seeded with a handful of Real World and fictional names. It
@@ -16,23 +15,14 @@ with .txt or .csv in order to make the name data more persistent and human
 readable.
 """
 
-# specifying path to name data
-script_dir = os.path.dirname(__file__)
-real_path = "data/rw_belhedan.txt"
-save_path = "data/places_belhedan.txt"
-rejects_path = "data/rejects_belhedan.txt"
-abs_real_path = os.path.join(script_dir, real_path)
-abs_save_path = os.path.join(script_dir, save_path)
-abs_rejects_path = os.path.join(script_dir, rejects_path)
-
-with open(abs_save_path, "r") as places_file:
+with open("keep.txt", "r") as places_file:
     places = places_file.read().splitlines()
-with open(abs_real_path, "r") as real_file:
-    real_names = [line.strip() for line in real_file]
-with open(abs_rejects_path, "r") as rejects_file:
+with open("inspiration.txt", "r") as real_file:
+    inspiration = [line.strip() for line in real_file]
+with open("reject.txt", "r") as rejects_file:
     rejects = rejects_file.read().splitlines()
 
-name_data = places + real_names
+name_data = places + inspiration
 
 menu_options = {
     1: 'Train the name generator.',
@@ -189,10 +179,10 @@ def train_names():
     print('Updating dictionary...')
     print(f'Generated {run_count} names. Kept {yes_count} and rejected {no_count}.')
 
-    with open(abs_save_path, 'w') as fi:
+    with open('keep.txt', 'w') as fi:
         for place in places:
             fi.write(place + "\n")
-    with open(abs_rejects_path, 'w') as fi:
+    with open('reject.txt', 'w') as fi:
         for reject in rejects:
             fi.write(reject + "\n")
 
@@ -205,7 +195,7 @@ def generate_names():
     count = 0
     while count < 100:
         name = MName().New()
-        if name not in real_names and name not in rejects:
+        if name not in inspiration and name not in rejects:
             count += 1
             print(name)
         else:
@@ -290,10 +280,10 @@ def access_list(x):
                     o.write(f'{name}\n')
         elif option == 4:
             print('\nReturning to main menu\n')
-            with open(abs_save_path, 'w') as fi:
+            with open('keep.txt', 'w') as fi:
                 for place in places:
                     fi.write(place + "\n")
-            with open(abs_rejects_path, 'w') as fi:
+            with open('reject.txt', 'w') as fi:
                 for reject in rejects:
                     fi.write(reject + "\n")
             break
@@ -332,10 +322,10 @@ def main_menu():
             access_list(rejects)
         elif option == 5:
             print('\nExiting...')
-            with open(abs_save_path, 'w') as fi:
+            with open('keep.txt', 'w') as fi:
                 for place in places:
                     fi.write(place + "\n")
-            with open(abs_rejects_path, 'w') as fi:
+            with open('reject.txt', 'w') as fi:
                 for reject in rejects:
                     fi.write(reject + "\n")
             exit()
@@ -347,5 +337,5 @@ def main_menu():
 
 # Main Code Block
 if __name__ == "__main__":
-    print("Belhedan System Name Generator\n")
+    print("Aamidali System Name Generator\n")
     main_menu()
