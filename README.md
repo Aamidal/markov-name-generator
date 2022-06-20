@@ -1,5 +1,5 @@
 # markov-name-generator
-A Markov chain-based name generator
+A Markov chain-based name generator, currently a work in progress intended to provide fictional place names inspirated by real world city names.
 
 Reads names from 'inspiration.txt' and generates new names like them. 
 
