@@ -2,24 +2,19 @@ import random
 import sys
 
 """
-This module has been seeded with a handful of Real World and fictional names. It
-uses a Markov model to generate new names from the seeded names, and allows the
-user to keep or reject generated names. Kept names are added to the fictional
-name list and thus fed back into the markov model. Rejected names are filtered
-from being output again.
+This module generates new names using a Markov Chain model read from a newline
+separated list. It saves user-approved generated names to a new list. Rejected
+names are stored in a third list and will never be output again. 
 
-Future versions will utilize a much larger, themed list of real world names, or
-potentially allow the user to select from multiple sets of name lists in order
-to train name generators for specific cultures. Pickle will likely be replaced
-with .txt or .csv in order to make the name data more persistent and human
-readable.
+The Markov dictionary is built using both the original name lists and the
+generated names, if available.
 """
 
-with open("keep.txt", "r") as places_file:
+with open("keep.txt", "r") as places_file: #output list
     places = places_file.read().splitlines()
-with open("inspiration.txt", "r") as real_file:
+with open("inspiration.txt", "r") as real_file: #initial list
     inspiration = [line.strip() for line in real_file]
-with open("reject.txt", "r") as rejects_file:
+with open("reject.txt", "r") as rejects_file: #rejected list
     rejects = rejects_file.read().splitlines()
 
 name_data = places + inspiration
@@ -295,7 +290,7 @@ def access_list(x):
 
 def main_menu():
     """
-    Print main menu options and pickle name lists on exit.
+    Print main menu options and save name lists on exit.
     """
     while(True):
         print_menu()
