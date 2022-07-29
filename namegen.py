@@ -332,5 +332,5 @@ def main_menu():
 
 # Main Code Block
 if __name__ == "__main__":
-    print("Aamidali System Name Generator\n")
+    print("Random Name Generator\n")
     main_menu()
