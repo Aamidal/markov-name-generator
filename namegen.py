@@ -9,15 +9,19 @@ names are stored in a third list and will never be output again.
 The Markov dictionary is built using both the original name lists and the
 generated names, if available.
 """
+keep_file = "./data/keep.txt"
+real_world_file = "./data/inspiration.txt"
+blacklist_file = "./data/reject.txt"
 
-with open("keep.txt", "r") as places_file: #output list
+with open(keep_file, "r") as places_file: #output list
     places = places_file.read().splitlines()
-with open("inspiration.txt", "r") as real_file: #initial list
+with open(real_world_file, "r") as real_file: #initial list
     inspiration = [line.strip() for line in real_file]
-with open("reject.txt", "r") as rejects_file: #rejected list
+with open(blacklist_file, "r") as rejects_file: #rejected list
     rejects = rejects_file.read().splitlines()
 
 name_data = places + inspiration
+blacklist = rejects + inspiration
 
 menu_options = {
     1: 'Train the name generator.',
@@ -46,28 +50,28 @@ def print_list_menu():
     for key in list_menu.keys():
         print (key, '--', list_menu[key])
 
-class Mdict:
+class Markov_Dict:
     def __init__(self):
-        self.d = {}
+        self.dict = {}
     def __getitem__(self, key):
-        if key in self.d:
-            return self.d[key]
+        if key in self.dict:
+            return self.dict[key]
         else:
             raise KeyError(key)
     def add_key(self, prefix, suffix):
-        if prefix in self.d:
-            self.d[prefix].append(suffix)
+        if prefix in self.dict:
+            self.dict[prefix].append(suffix)
         else:
-            self.d[prefix] = [suffix]
+            self.dict[prefix] = [suffix]
     def get_suffix(self,prefix):
         l = self[prefix]
-        return random.choice(l)  
+        return random.choice(l)
 
-class MName:
+class Markov_Name:
     """
     A name from a Markov chain
     """
-    def __init__(self, chainlen = 2):
+    def __init__(self, chainlen = 3):
         """
         Building the dictionary
         """
@@ -75,7 +79,7 @@ class MName:
             print("Chain length must be between 1 and 10, inclusive")
             sys.exit(0)
     
-        self.mcd = Mdict()
+        self.mcd = Markov_Dict()
         oldnames = []
         self.chainlen = chainlen
     
@@ -116,7 +120,7 @@ def train_names():
     loop = True
     queue = []
     while loop == True:
-        name = MName().New()
+        name = Markov_Name().New()
         if name not in name_data and name not in rejects:
             run_count += 1
             print(name)
@@ -174,27 +178,30 @@ def train_names():
     print('Updating dictionary...')
     print(f'Generated {run_count} names. Kept {yes_count} and rejected {no_count}.')
 
-    with open('keep.txt', 'w') as fi:
+    with open(keep_file, 'w') as fi:
         for place in places:
             fi.write(place + "\n")
-    with open('reject.txt', 'w') as fi:
+    with open(blacklist_file, 'w') as fi:
         for reject in rejects:
             fi.write(reject + "\n")
 
     input('Dictionary updated. Press any key to quit.')
 
-def generate_names():
+def new_name():
+    name = Markov_Name().New()
+    if name not in blacklist:
+        return name
+    else:
+        new_name()
+
+def generate_names(num = 25):
     """
-    Use markov model to generate novel names.
+    Use markov model to generate num names.
     """
     count = 0
-    while count < 100:
-        name = MName().New()
-        if name not in inspiration and name not in rejects:
-            count += 1
-            print(name)
-        else:
-            continue
+    while count < num:
+        count += 1
+        print(new_name())
     print(f'{count} names generated.')
 
 def add_names(x):
@@ -275,10 +282,10 @@ def access_list(x):
                     o.write(f'{name}\n')
         elif option == 4:
             print('\nReturning to main menu\n')
-            with open('keep.txt', 'w') as fi:
+            with open(keep_file, 'w') as fi:
                 for place in places:
                     fi.write(place + "\n")
-            with open('reject.txt', 'w') as fi:
+            with open(blacklist_file, 'w') as fi:
                 for reject in rejects:
                     fi.write(reject + "\n")
             break
@@ -317,10 +324,10 @@ def main_menu():
             access_list(rejects)
         elif option == 5:
             print('\nExiting...')
-            with open('keep.txt', 'w') as fi:
+            with open(keep_file, 'w') as fi:
                 for place in places:
                     fi.write(place + "\n")
-            with open('reject.txt', 'w') as fi:
+            with open(blacklist_file, 'w') as fi:
                 for reject in rejects:
                     fi.write(reject + "\n")
             exit()
@@ -328,7 +335,6 @@ def main_menu():
             print(
                 '\nInvalid input. Please enter a number between 1 and 5.\n'
                 )
-
 
 # Main Code Block
 if __name__ == "__main__":
